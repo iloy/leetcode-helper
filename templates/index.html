@@ -1,0 +1,562 @@
+{% include "header.html" %}
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li>Easy: </li>
+        <li>Medium: </li>
+        <li>Hard: </li>
+      </ul>
+    </div>
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li style="text-align: right"><span id="solved_easy"> </span> / <span id="total_easy"> </span></li>
+        <li style="text-align: right"><span id="solved_medium"> </span> / <span id="total_medium"> </span></li>
+        <li style="text-align: right"><span id="solved_hard"> </span> / <span id="total_hard"> </span></li>
+      </ul>
+    </div>
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li style="text-align: right">(<span id="solved_free_easy"> </span> / <span id="total_free_easy"> </span>)</li>
+        <li style="text-align: right">(<span id="solved_free_medium"> </span> / <span id="total_free_medium"> </span>)</li>
+        <li style="text-align: right">(<span id="solved_free_hard"> </span> / <span id="total_free_hard"> </span>)</li>
+      </ul>
+    </div>
+    <div class="col col-md-auto" style="width: 300px;">
+      <div class="progress" style="height: 25px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" id="bar_easy"> </div>
+      </div>
+      <div class="progress" style="height: 25px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="bar_medium"> </div>
+      </div>
+      <div class="progress" style="height: 25px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="bar_hard"> </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="height:10px;">
+</div>
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-auto">
+        <h2>Today</h2>
+    </div>
+  </div>
+  <div class="row justify-content-md-center">
+    <div class="col col-md-auto">
+        <h5>Easy: <span id="today_easy"></span> Medium: <span id="today_medium"></span> Hard: <span id="today_hard"></span></h5>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="height:20px;">
+</div>
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" value="" id="easy" onclick="checkbox_save()">
+        <label class="form-check-label" for="easy">Easy</label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" value="" id="medium" onclick="checkbox_save()">
+        <label class="form-check-label" for="medium">Medium</label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" value="" id="hard" onclick="checkbox_save()">
+        <label class="form-check-label" for="hard">Hard</label>
+      </div>
+    </div>
+    <div class="col col-md-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" value="" id="unsolved" onclick="checkbox_save()">
+        <label class="form-check-label" for="unsolved">Unsolved</label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" value="" id="solved" onclick="checkbox_save()">
+        <label class="form-check-label" for="solved">Solved</label>
+      </div>
+    </div>
+    <div class="col col-md-auto">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" value="" id="free" onclick="checkbox_save()">
+        <label class="form-check-label" for="free">Free</label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" value="" id="plus" onclick="checkbox_save()">
+        <label class="form-check-label" for="plus">Plus</label>
+      </div>
+    </div>
+    <div class="col col-md-auto">
+      <button type="button" class="btn btn-primary btn-lg" id="button_pick" onclick="pick()">
+        <span class="spinner-border spinner-border-sm visually-hidden" role="status" aria-hidden="true"></span>
+        Pick a problem
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="height:20px;">
+</div>
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li>No.</li>
+        <li id="problem_no"></li>
+      </ul>
+    </div>
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li>Title</li>
+        <li id="problem_name"></li>
+      </ul>
+    </div>
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li>Difficulty</li>
+        <li id="problem_difficulty"></li>
+      </ul>
+    </div>
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li>Acceptance</li>
+        <li id="problem_acceptance"></li>
+      </ul>
+    </div>
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li>Billing</li>
+        <li id="problem_billing"></li>
+      </ul>
+    </div>
+    <div class="col col-md-auto">
+      <ul class="list-unstyled">
+        <li>Solved</li>
+        <li id="problem_solved"></li>
+      </ul>
+    </div>
+    <div class="col col-md-auto visually-hidden">
+      <ul class="list-unstyled">
+        <li>Link</li>
+        <li id="problem_weblink"></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container" style="height:10px;">
+  </div>
+
+  <div class="row justify-content-md-center">
+    <div class="col col-md-auto align-self-center">
+      <button type="button" class="btn btn-secondary btn-lg" id="button_start" onclick="mark_start()" disabled>
+        <span class="spinner-border spinner-border-sm visually-hidden" role="status" aria-hidden="true"></span>
+        Start
+      </button>
+    </div>
+    <div class="col col-md-auto align-self-center">
+    <h1><span id="stopwatch">00:00:00</span></h1>
+    </div>
+    <div class="col col-md-auto align-self-center">
+      <button type="button" class="btn btn-secondary btn-lg" id="button_done" onclick="mark_done()" disabled>
+        <span class="spinner-border spinner-border-sm visually-hidden" role="status" aria-hidden="true"></span>
+        Done
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+window.onload = initialize
+
+function myAlert(text = '', isWarning = false) {
+	const confirmButtonClass = isWarning ? 'btn btn-warning btn-lg' : 'btn btn-primary btn-lg'
+	const icon = isWarning ? 'warning' : 'info'
+
+	const swalWithBootstrapButtons = Swal.mixin({
+	  customClass: {
+		confirmButton: confirmButtonClass,
+	  },
+	  buttonsStyling: false
+	})
+
+    swalWithBootstrapButtons.fire({
+        title: '',
+        text: text,
+        icon: icon,
+        allowOutsideClick: false,
+        allowEnterKey: true,
+        keydownListenerCapture: true,
+    })
+}
+
+async function initialize() {
+    checkbox_restore()
+
+    let total_open = await stats()
+
+    if (total_open.length > 0) {
+        let body = total_open[0]
+
+        document.getElementById('problem_no').textContent = body.no
+        //document.getElementById('problem_name').innerHTML = '<a href="https://leetcode.com/problems/'+ body.weblink +'" target="_blank" rel="noopener noreferrer">'+ body.name +'</a>'
+        document.getElementById('problem_name').textContent = body.name
+        document.getElementById('problem_difficulty').textContent = body.difficulty
+        document.getElementById('problem_acceptance').textContent = body.acceptance + '%'
+        document.getElementById('problem_billing').textContent = body.paidonly ? 'Plus' : 'Free'
+        document.getElementById('problem_solved').textContent = 'No'
+        document.getElementById('problem_weblink').textContent = body.weblink
+
+        startTimer()
+        timeStart = new Date().getTime() - body.time_elapsed * 1000
+
+        button_enable('button_pick', false)
+        button_enable('button_start', false, 'btn-danger')
+        button_enable('button_done', true, 'btn-success')
+
+        myAlert('there is a open problem', true)
+    } else {
+        button_enable('button_pick', true)
+        button_enable('button_start', false, 'btn-danger')
+        button_enable('button_done', false, 'btn-success')
+    }
+}
+
+async function stats() {
+    const url = '/api/stats'
+    const options = {
+        method: 'GET',
+        mode: 'same-origin',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'error',
+        referrerPolicy: 'no-referrer',
+    }
+    const res = await fetch(url, options)
+    //console.log(res)
+    if (!res.ok) {
+        myAlert('server error', true)
+        return
+    }
+    const body = await res.json()
+    //console.log(body)
+
+    document.getElementById('solved_easy').textContent = body.solved_easy
+    document.getElementById('solved_medium').textContent = body.solved_medium
+    document.getElementById('solved_hard').textContent = body.solved_hard
+
+    document.getElementById('total_easy').textContent = body.total_easy
+    document.getElementById('total_medium').textContent = body.total_medium
+    document.getElementById('total_hard').textContent = body.total_hard
+
+    document.getElementById('solved_free_easy').textContent = body.solved_free_easy
+    document.getElementById('solved_free_medium').textContent = body.solved_free_medium
+    document.getElementById('solved_free_hard').textContent = body.solved_free_hard
+
+    document.getElementById('total_free_easy').textContent = body.total_free_easy
+    document.getElementById('total_free_medium').textContent = body.total_free_medium
+    document.getElementById('total_free_hard').textContent = body.total_free_hard
+
+    document.getElementById('today_easy').textContent = body.today_easy
+    document.getElementById('today_medium').textContent = body.today_medium
+    document.getElementById('today_hard').textContent = body.today_hard
+
+    let e = document.getElementById('bar_easy')
+    let v = (body.solved_free_easy / body.total_free_easy * 100).toFixed(1)+'%'
+    e.textContent = v
+    e.style.width = v
+    e = document.getElementById('bar_medium')
+    v = (body.solved_free_medium / body.total_free_medium* 100).toFixed(1)+'%'
+    e.textContent = v
+    e.style.width = v
+    e = document.getElementById('bar_hard')
+    v =(body.solved_free_hard / body.total_free_hard * 100).toFixed(1)+'%'
+    e.textContent = v
+    e.style.width = v
+
+    return body.total_open
+}
+
+function button_enable(id, enable, btn_class = 'btn-primary') {
+    const e = document.getElementById(id)
+
+    if (enable) {
+        e.disabled = false
+        e.classList.remove('btn-secondary')
+        e.classList.add(btn_class)
+    } else {
+        e.disabled = true
+        e.classList.remove(btn_class)
+        e.classList.add('btn-secondary')
+    }
+}
+
+const checkbox_ids = ['easy', 'medium', 'hard', 'unsolved', 'solved', 'free', 'plus']
+const checkbox_ids_default = ['medium', 'unsolved', 'free']
+const storage_key = 'index.html/'
+
+function checkbox_save() {
+    let storage = window.sessionStorage
+
+    checkbox_ids.forEach(function(id) {
+        storage.setItem(storage_key + 'checkbox_' + id, document.getElementById(id).checked === true ? 'true' : 'false')
+    })
+}
+
+function checkbox_restore() {
+    let storage = window.sessionStorage
+
+    let cnt = 0
+    checkbox_ids.forEach(function(id) {
+        let item = storage.getItem(storage_key + 'checkbox_' + id)
+        if (item === 'true') {
+            document.getElementById(id).checked  = true
+            cnt += 1
+        } else {
+            document.getElementById(id).checked  = false
+        }
+    })
+
+    if (cnt === 0) {
+        checkbox_ids_default.forEach(function(id) {
+            document.getElementById(id).checked  = true
+        })
+        checkbox_save()
+    }
+}
+
+function check(id, arr, value) {
+    if (document.getElementById(id).checked) {
+        arr.push(value)
+    }
+}
+
+async function pick() {
+    let difficulties = []
+    check('easy', difficulties, 'Easy')
+    check('medium', difficulties, 'Medium')
+    check('hard', difficulties, 'Hard')
+
+    let status = []
+    check('unsolved', status, "Unsolved")
+    check('solved', status, 'Solved')
+
+    let billing = []
+    check('free', billing, 'Free')
+    check('plus', billing, 'Plus')
+
+    //console.log(difficulties, status, billing)
+
+    if (difficulties.length === 0 || status.length === 0 || billing.length === 0) {
+        myAlert('Invalid choice', true)
+        return
+    }
+
+    document.getElementById('button_pick').getElementsByTagName('span')[0].classList.remove('visually-hidden')
+
+    document.getElementById('problem_no').textContent = ''
+    //document.getElementById('problem_name').innerHTML = ''
+    document.getElementById('problem_name').textContent = ''
+    document.getElementById('problem_difficulty').textContent = ''
+    document.getElementById('problem_acceptance').textContent = ''
+    document.getElementById('problem_billing').textContent = ''
+    document.getElementById('problem_solved').textContent = ''
+    document.getElementById('problem_weblink').textContent = ''
+
+    const url = '/api/pick'
+    const options = {
+        method: 'POST',
+        mode: 'same-origin',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'error',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+            'target_difficulties': difficulties,
+            'target_status': status,
+            'target_billing': billing,
+        }),
+    }
+    const res = await fetch(url, options)
+    //console.log(res)
+    if (!res.ok) {
+        myAlert('server error', true)
+        return
+    }
+    const body = await res.json()
+    //console.log(body)
+
+    resetTimer()
+
+    if (!Object.keys(body).length) {
+        document.getElementById('button_pick').getElementsByTagName('span')[0].classList.add('visually-hidden')
+
+        button_enable('button_start', false, 'btn-danger')
+        //button_enable('button_done', false, 'btn-success')
+
+        myAlert('no problems left')
+        return
+    }
+
+    document.getElementById('problem_no').textContent = body.no
+    //document.getElementById('problem_name').innerHTML = '<a href="https://leetcode.com/problems/'+ body.weblink +'" target="_blank" rel="noopener noreferrer">'+ body.name +'</a>'
+    document.getElementById('problem_name').textContent = body.name
+    document.getElementById('problem_difficulty').textContent = body.difficulty
+    document.getElementById('problem_acceptance').textContent = body.acceptance + '%'
+    document.getElementById('problem_billing').textContent = body.paidonly ? 'Plus' : 'Free'
+    document.getElementById('problem_solved').textContent = body.solved ? 'Yes ' + body.time_elapsed : 'No'
+    document.getElementById('problem_weblink').textContent = body.weblink
+
+    button_enable('button_start', true, 'btn-danger')
+    document.getElementById('button_pick').getElementsByTagName('span')[0].classList.add('visually-hidden')
+}
+
+async function mark_start() {
+    const e = document.getElementById('problem_weblink')
+    if (e.textContent.length === 0) {
+        return
+    }
+
+    window.open('https://leetcode.com/problems/'+ e.textContent, '_blank', 'noopener,noreferrer')
+
+    const url = '/api/mark_start'
+    const options = {
+        method: 'POST',
+        mode: 'same-origin',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'error',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+            'no': parseInt(document.getElementById('problem_no').textContent),
+            'solved': document.getElementById('problem_solved').textContent === 'No' ? false : true
+        }),
+    }
+    const res = await fetch(url, options)
+    //console.log(res)
+    if (!res.ok) {
+        myAlert('server error', true)
+        return
+    }
+    const body = await res.json()
+    //console.log(body)
+
+    startTimer()
+
+    button_enable('button_pick', false)
+    button_enable('button_start', false, 'btn-danger')
+    button_enable('button_done', true, 'btn-success')
+}
+
+async function mark_done() {
+    document.getElementById('button_done').getElementsByTagName('span')[0].classList.remove('visually-hidden')
+
+    const url = '/api/mark_done'
+    const options = {
+        method: 'POST',
+        mode: 'same-origin',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'error',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+            'no': parseInt(document.getElementById('problem_no').textContent),
+        }),
+    }
+    const res = await fetch(url, options)
+    //console.log(res)
+    if (!res.ok) {
+        myAlert('server error', true)
+        return
+    }
+    const body = await res.json()
+    //console.log(body)
+
+    stopTimer()
+    timer.textContent = body.time_elapsed
+
+    button_enable('button_pick', true)
+    button_enable('button_start', false, 'btn-danger')
+    button_enable('button_done', false, 'btn-success')
+    document.getElementById('button_done').getElementsByTagName('span')[0].classList.add('visually-hidden')
+
+    await initialize()
+}
+
+const timer = document.getElementById('stopwatch');
+let origTitle = document.title
+let stoptime = true
+let timeStart = 0
+let prevTimerString = ''
+
+function startTimer() {
+    if (stoptime === true) {
+        stoptime = false
+        timeStart = new Date().getTime()
+        timerCycle()
+    }
+}
+function stopTimer() {
+     if (stoptime === false) {
+        stoptime = true
+        document.title = origTitle
+    }
+}
+
+function resetTimer() {
+    timer.textContent = '00:00:00'
+    document.title = origTitle
+}
+
+function timerCycle() {
+    if (stoptime === false) {
+        const elapsed = Math.floor((new Date().getTime() - timeStart) / 1000)
+        let hr = Math.floor(elapsed / (60 * 60))
+        let min = Math.floor((elapsed - hr * 60 * 60) / 60)
+        let sec = elapsed - hr * 60 * 60 - min * 60
+
+        if (sec < 10 || sec === 0) {
+            sec = '0' + sec
+        }
+        if (min < 10 || min === 0) {
+			min = '0' + min
+        }
+        if (hr < 10 || hr === 0) {
+            hr = '0' + hr
+        }
+
+        const timerString = hr + ':' + min + ':' + sec
+        if (timerString != prevTimerString) {
+            prevTimerString = timerString
+            timer.textContent = document.title = hr + ':' + min + ':' + sec
+        }
+
+        setTimeout(timerCycle, 30)
+    }
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.5/dist/sweetalert2.all.min.js" integrity="sha256-sq9BgeqJAlCLfjfAO+2diFGt5O8aIYNrds+yhlpFnvg=" crossorigin="anonymous"></script>
+
+{% include "footer.html" %}

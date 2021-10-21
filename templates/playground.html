@@ -1,0 +1,197 @@
+{% include "header.html" %}
+
+<div class="d-flex justify-content-center">
+  <div class="spinner-border visually-hidden" id="spinner" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-md-center visually-hidden" id="error">
+    <div class="col col-md-auto" id="error_message"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-11" id="term">
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-auto" id="version">
+_
+    </div>
+  </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery.terminal@2.29.2/js/jquery.terminal.min.js" integrity="sha256-QOVbYTOx8BaF2JxuKIj+sjFybhG0kqw1E2PIHvB0cPg=" crossorigin="anonymous"></script>
+
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js"></script>
+
+<script>
+"use strict";
+
+window.onload = initialize
+
+async function initialize() {
+    document.getElementById('spinner').classList.remove('visually-hidden')
+
+    try {
+        await main()
+    } catch (e) {
+        document.getElementById('error_message').textContent = e.message
+        document.getElementById('error').classList.remove('visually-hidden')
+    } finally {
+        document.getElementById('spinner').classList.add('visually-hidden')
+    }
+}
+
+// copy from https://pyodide.org/en/stable/console.html and modified
+
+function sleep(s) {
+    return new Promise((resolve) => setTimeout(resolve, s));
+}
+
+async function main() {
+    globalThis.pyodide = await loadPyodide({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
+        fullStdLib: false,
+    });
+
+    document.getElementById('version').textContent = "Pyodide " + pyodide.version;
+
+    let namespace = pyodide.globals.get("dict")();
+    pyodide.runPython(
+        `
+        import sys
+        from pyodide import to_js
+        from pyodide.console import PyodideConsole, repr_shorten, BANNER
+        import __main__
+        #BANNER = "Welcome to the Pyodide terminal emulator 🐍\\n" + BANNER
+        pyconsole = PyodideConsole(__main__.__dict__)
+        async def await_fut(fut):
+          return to_js([await fut], depth=1)
+        def clear_console():
+          pyconsole.buffer = []
+        `,
+        namespace
+    );
+    let repr_shorten = namespace.get("repr_shorten");
+    let banner = namespace.get("BANNER");
+    let await_fut = namespace.get("await_fut");
+    let pyconsole = namespace.get("pyconsole");
+    let clear_console = namespace.get("clear_console");
+    namespace.destroy();
+
+    let ps1 = ">>> ",
+        ps2 = "... ";
+
+    async function lock() {
+        let resolve;
+        let ready = term.ready;
+        term.ready = new Promise((res) => (resolve = res));
+        await ready;
+        return resolve;
+    }
+
+    async function interpreter(command) {
+        let unlock = await lock();
+        term.pause();
+        // multiline should be splitted (useful when pasting)
+        for (const c of command.split("\n")) {
+            let fut = pyconsole.push(c);
+            term.set_prompt(fut.syntax_check === "incomplete" ? ps2 : ps1);
+            switch (fut.syntax_check) {
+            case "syntax-error":
+                term.error(fut.formatted_error.trimEnd());
+                continue;
+            case "incomplete":
+                continue;
+            case "complete":
+                break;
+            default:
+                throw new Error(`Unexpected type ${ty}`);
+            }
+            // In Javascript, await automatically also awaits any results of
+            // awaits, so if an async function returns a future, it will await
+            // the inner future too. This is not what we want so we
+            // temporarily put it into a list to protect it.
+            let wrapped = await_fut(fut);
+            // complete case, get result / error and print it.
+            try {
+                let [value] = await wrapped;
+                if (value !== undefined) {
+                    term.echo(
+                        repr_shorten.callKwargs(value, {
+                            separator: "\n[[;orange;]<long output truncated>]\n",
+                        })
+                    );
+                }
+                if (pyodide.isPyProxy(value)) {
+                    value.destroy();
+                }
+            } catch (e) {
+                if (e.constructor.name === "PythonError") {
+                    term.error(fut.formatted_error.trimEnd());
+                } else {
+                    throw e;
+                }
+            } finally {
+                fut.destroy();
+                wrapped.destroy();
+            }
+        }
+        term.resume();
+        await sleep(10);
+        unlock();
+    }
+
+    let term = $("#term").terminal(interpreter, {
+        greetings: banner,
+        prompt: ps1,
+        completionEscape: false,
+        completion: function (command, callback) {
+            callback(pyconsole.complete(command).toJs()[0]);
+        },
+        keymap: {
+            "CTRL+C": async function (event, original) {
+                clear_console();
+                term.echo_command();
+                term.echo("KeyboardInterrupt");
+                term.set_command("");
+                term.set_prompt(ps1);
+            },
+        },
+        //width: 800,
+        //height: 600,
+    });
+    window.term = term;
+    pyconsole.stdout_callback = (s) => term.echo(s, { newline: false });
+    pyconsole.stderr_callback = (s) => {
+        term.error(s.trimEnd());
+    };
+    term.ready = Promise.resolve();
+    pyodide._module.on_fatal = async (e) => {
+        term.error(
+            "Pyodide has suffered a fatal error. Please report this to the Pyodide maintainers."
+        );
+        term.error("The cause of the fatal error was:");
+        term.error(e);
+        term.error("Look in the browser console for more details.");
+        await term.ready;
+        term.pause();
+        await sleep(15);
+        term.pause();
+    };
+}
+
+//window.console_ready = main();
+</script>
+
+{% include "footer.html" %}

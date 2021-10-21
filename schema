@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS 'excluded' (id INTEGER PRIMARY KEY, reason TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS 'problems' (id INTEGER PRIMARY KEY, title TEXT, acceptance REAL CHECK(acceptance >=0 AND acceptance <= 100) NOT NULL, difficulty TEXT CHECK(difficulty IN ('Easy', 'Medium', 'Hard')) NOT NULL, plus INETEGER NOT NULL, weblink TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS "solved" (id INTEGER PRIMARY KEY, time_start TEXT NOT NULL DEFAULT (DATETIME('now', 'localtime')), time_done TEXT DEFAULT NULL);
+CREATE INDEX IF NOT EXISTS problems_difficulty ON problems (difficulty);
+CREATE INDEX IF NOT EXISTS solved_time_start ON solved (time_start);
+CREATE INDEX IF NOT EXISTS solved_time_done ON solved (time_done);
