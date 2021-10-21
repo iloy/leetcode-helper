@@ -1,5 +1,5 @@
 
-# LeetCode Helper by iloy
+# LeetCode Helper
 
 ## how to install
 1. install python3
