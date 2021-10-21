@@ -8,7 +8,7 @@
 ## how to run
 1. move to the source code directory
 1. `./crawler.py`
-1. `nohub make test &`
+1. `nohup make test &`
 1. open a web browser and connect to `http://[server IP]:8080`
 1. solve the problems!
 
