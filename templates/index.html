@@ -94,7 +94,7 @@
     </div>
     <div class="col col-md-auto">
       <button type="button" class="btn btn-primary btn-lg" id="button_pick" onclick="pick()">
-        <span class="spinner-border spinner-border-sm visually-hidden" role="status" aria-hidden="true"></span>
+        <!--<span class="spinner-border spinner-border-sm visually-hidden" role="status" aria-hidden="true"></span>-->
         Pick a problem
       </button>
     </div>
@@ -363,7 +363,7 @@ async function pick() {
         return
     }
 
-    document.getElementById('button_pick').getElementsByTagName('span')[0].classList.remove('visually-hidden')
+    //document.getElementById('button_pick').getElementsByTagName('span')[0].classList.remove('visually-hidden')
 
     document.getElementById('problem_no').textContent = ''
     //document.getElementById('problem_name').innerHTML = ''
@@ -403,7 +403,7 @@ async function pick() {
     resetTimer()
 
     if (!Object.keys(body).length) {
-        document.getElementById('button_pick').getElementsByTagName('span')[0].classList.add('visually-hidden')
+        //document.getElementById('button_pick').getElementsByTagName('span')[0].classList.add('visually-hidden')
 
         button_enable('button_start', false, 'btn-danger')
         //button_enable('button_done', false, 'btn-success')
@@ -422,7 +422,7 @@ async function pick() {
     document.getElementById('problem_weblink').textContent = body.weblink
 
     button_enable('button_start', true, 'btn-danger')
-    document.getElementById('button_pick').getElementsByTagName('span')[0].classList.add('visually-hidden')
+    //document.getElementById('button_pick').getElementsByTagName('span')[0].classList.add('visually-hidden')
 }
 
 async function mark_start() {
