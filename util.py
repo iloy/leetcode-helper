@@ -13,9 +13,10 @@ FMT = '%Y-%m-%d %H:%M:%S'
 def strfdelta(start: str, end: str, fmt: str = '%H:%M:%S') -> str:
     tdelta = datetime.strptime(end, FMT) - datetime.strptime(start, FMT)
 
-    d = {"D": str(tdelta.days)}
     hours, rem = divmod(tdelta.seconds, 3600)
     minutes, seconds = divmod(rem, 60)
+    hours += tdelta.days * 24
+    d = {}
     d["H"] = '{:02d}'.format(hours)
     d["M"] = '{:02d}'.format(minutes)
     d["S"] = '{:02d}'.format(seconds)
