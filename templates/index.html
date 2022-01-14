@@ -250,7 +250,7 @@ async function stats() {
         return
     }
     const body = await res.json()
-    console.log(body)
+    //console.log(body)
 
     document.getElementById('solved_easy').textContent = body.solved_easy + body.removed_easy
     document.getElementById('solved_medium').textContent = body.solved_medium + body.removed_medium
@@ -557,6 +557,6 @@ function timerCycle() {
 
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.5/dist/sweetalert2.all.min.js" integrity="sha256-sq9BgeqJAlCLfjfAO+2diFGt5O8aIYNrds+yhlpFnvg=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.3.4/dist/sweetalert2.all.min.js" integrity="sha256-BkUgaETbff6QynrhYiY+ZltDJW+2F9xFD0tEyHJd+UQ=" crossorigin="anonymous"></script>
 
 {% include "footer.html" %}
