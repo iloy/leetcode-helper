@@ -50,6 +50,7 @@ def load_stats() -> Dict[str, Any]:
     # solved_free_[easy/medium/hard]
     total_easy, total_medium, total_hard = load_stats_easy_medium_hard('SELECT difficulty, COUNT(id) FROM problems GROUP BY difficulty')
     solved_easy, solved_medium, solved_hard = load_stats_easy_medium_hard('SELECT problems.difficulty, COUNT(solved.id) FROM solved LEFT JOIN problems ON problems.id = solved.id WHERE solved.time_done IS NOT NULL GROUP BY problems.difficulty')
+    removed_easy, removed_medium, removed_hard = load_stats_easy_medium_hard('SELECT difficulty, COUNT(id) FROM solved_but_removed GROUP BY difficulty')
     total_free_easy, total_free_medium, total_free_hard = load_stats_easy_medium_hard('SELECT difficulty, COUNT(id) FROM problems WHERE id NOT IN (SELECT id FROM excluded) AND plus = 0 GROUP BY difficulty')
     solved_free_easy, solved_free_medium, solved_free_hard = load_stats_easy_medium_hard('SELECT problems.difficulty, COUNT(solved.id) FROM solved LEFT JOIN problems ON problems.id = solved.id WHERE solved.time_done IS NOT NULL AND solved.id NOT IN (SELECT id FROM excluded) GROUP BY problems.difficulty')
 
@@ -76,6 +77,10 @@ def load_stats() -> Dict[str, Any]:
     d['solved_free_medium'] = solved_free_medium
     d['solved_free_hard'] = solved_free_hard
 
+    d['removed_easy'] = removed_easy
+    d['removed_medium'] = removed_medium
+    d['removed_hard'] = removed_hard
+
     d['today_easy'] = today_easy
     d['today_medium'] = today_medium
     d['today_hard'] = today_hard
@@ -91,9 +96,10 @@ if __name__ == '__main__':
         sys.exit(1)
 
     stats = load_stats()
-    print('Easy:', stats['solved_easy'], '/', stats['total_easy'], '(', stats['solved_free_easy'], '/', stats['total_free_easy'], ')')
-    print('Medium:', stats['solved_medium'], '/', stats['total_medium'], '(', stats['solved_free_medium'], '/', stats['total_free_medium'], ')')
-    print('Hard:', stats['solved_hard'], '/', stats['total_hard'], '(', stats['solved_free_hard'], '/', stats['total_free_hard'], ')')
+    print('All:', stats['solved_easy'] + stats['solved_medium'] + stats['solved_hard'] + stats['removed_easy'] + stats['removed_medium'] + stats['removed_hard'], '/', stats['total_easy'] + stats['total_medium'] + stats['total_hard'], '(', stats['solved_free_easy'] + stats['solved_free_medium'] + stats['solved_free_hard'], '/', stats['total_free_easy'] + stats['total_free_medium'] + stats['total_free_hard'], ')')
+    print('Easy:', stats['solved_easy'] + stats['removed_easy'], '/', stats['total_easy'], '(', stats['solved_free_easy'], '/', stats['total_free_easy'], ')')
+    print('Medium:', stats['solved_medium'] + stats['removed_medium'], '/', stats['total_medium'], '(', stats['solved_free_medium'], '/', stats['total_free_medium'], ')')
+    print('Hard:', stats['solved_hard'] + stats['removed_hard'], '/', stats['total_hard'], '(', stats['solved_free_hard'], '/', stats['total_free_hard'], ')')
     print('')
     print('Open:', stats['total_open'])
     print('')

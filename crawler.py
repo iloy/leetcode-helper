@@ -36,7 +36,7 @@ def crawl() -> List[Problem]:
     limit = 100
     for i in range((total + 99) // limit):
         print(i+1)
-        time.sleep(0.1)
+        time.sleep(1)
         skip = i * limit
         command = f'./graphql.sh {skip} {limit}'
         res = get_call_result(command)

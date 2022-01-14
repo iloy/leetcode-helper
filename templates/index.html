@@ -250,11 +250,11 @@ async function stats() {
         return
     }
     const body = await res.json()
-    //console.log(body)
+    console.log(body)
 
-    document.getElementById('solved_easy').textContent = body.solved_easy
-    document.getElementById('solved_medium').textContent = body.solved_medium
-    document.getElementById('solved_hard').textContent = body.solved_hard
+    document.getElementById('solved_easy').textContent = body.solved_easy + body.removed_easy
+    document.getElementById('solved_medium').textContent = body.solved_medium + body.removed_medium
+    document.getElementById('solved_hard').textContent = body.solved_hard + body.removed_hard
 
     document.getElementById('total_easy').textContent = body.total_easy
     document.getElementById('total_medium').textContent = body.total_medium
@@ -408,7 +408,7 @@ async function pick() {
         button_enable('button_start', false, 'btn-danger')
         //button_enable('button_done', false, 'btn-success')
 
-        myAlert('no problems left')
+        myAlert('no problem left')
         return
     }
 

@@ -93,6 +93,10 @@ class StatsResponse(BaseModel):
     solved_free_medium: int
     solved_free_hard: int
 
+    removed_easy: int
+    removed_medium: int
+    removed_hard: int
+
     today_easy: int
     today_medium: int
     today_hard: int
