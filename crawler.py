@@ -36,21 +36,27 @@ def crawl() -> List[Problem]:
     limit = 100
     for i in range((total + 99) // limit):
         print(i+1)
-        time.sleep(1)
-        skip = i * limit
-        command = f'./graphql.sh {skip} {limit}'
-        res = get_call_result(command)
-        info = json.loads(res)
-        for q in info['data']['problemsetQuestionList']['questions']:
-            p = Problem(
-                    q['frontendQuestionId'],
-                    q['title'],
-                    round(q['acRate'], 1),
-                    q['difficulty'],
-                    q['paidOnly'],
-                    q['titleSlug'],
-                    )
-            questions.append(p)
+        success = False
+        while not success:
+            try:
+                time.sleep(1)
+                skip = i * limit
+                command = f'./graphql.sh {skip} {limit}'
+                res = get_call_result(command)
+                info = json.loads(res)
+                for q in info['data']['problemsetQuestionList']['questions']:
+                    p = Problem(
+                            q['frontendQuestionId'],
+                            q['title'],
+                            round(q['acRate'], 1),
+                            q['difficulty'],
+                            q['paidOnly'],
+                            q['titleSlug'],
+                            )
+                    questions.append(p)
+                success = True
+            except:
+                pass
 
     #print(questions)
     return questions
